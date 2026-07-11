@@ -21,14 +21,17 @@
                     <div class="list-index">
                         <span>{{ index + 1 }}</span>
                     </div>
-                    <div class="songname">
-                        <span>{{ song.name }}</span>
-                        <div class="singer">
-                            <span>{{ song.artist }}</span>
+                    <div class="list-content">
+                        <div class="songname">
+                            <span>{{ song.name }}</span>
+                            <div class="singer">
+                                <span>{{ song.artist }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="list-extre">
-                        <span></span>
+                        <div class="list-extre">
+                            <span class="song-ablum">《{{ song.bend }}》</span>
+                            <span>{{ SongsMS(song.durationMs) }}</span>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -50,6 +53,7 @@ const songs = ref([])
 const creator = ref({})
 const songMS = ref()
 
+
 const getListDetail = async () => {
     try {
         const res = await http.get('/playlist/detail', {
@@ -61,14 +65,23 @@ const getListDetail = async () => {
             id: t.id,
             name: t.name,
             artist: (t.ar || t.artist || []).map((a) => a.name).join('/'),
-            durationMs: t.dr || t.duration || 0,
+            durationMs: t.dt || t.duration || 0,
+            bend: t.al?.name || []
         })) || []
         console.log(res.playlist.tracks)
-        console.log(songs)
     } catch (err) {
         console.error(err)
     }
 }
+
+const SongsMS = (MS) => {
+    if (!MS) return '00:00'
+    const times = Math.floor(MS / 1000)
+    const m = Math.floor(times / 60)
+    const s = times % 60
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
+
 onMounted(() => {
     getListDetail()
 })
@@ -125,13 +138,26 @@ ul li {
     margin: 5px;
 }
 
+.list-content{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .songname {
     margin: 0 15px;
     font-size: 14px;
 }
-.singer{
+
+.singer {
     font-size: 10px;
     color: #999;
     margin: 5px;
+}
+
+.list-extre {
+    font-size: 12px;
+    color: #999;
 }
 </style>
