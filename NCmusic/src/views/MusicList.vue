@@ -32,6 +32,13 @@
                             <span class="song-ablum">《{{ song.bend }}》</span>
                             <span>{{ SongsMS(song.durationMs) }}</span>
                         </div>
+<<<<<<< HEAD
+=======
+                    </div>
+                    <div class="list-extre">
+                        <span>《{{ song.bend }}》</span>
+                        <span>{{ SongsMS(song.durationMs) }}</span>
+>>>>>>> 713a6a3b7cdb0b59e0d8312693b13e2ccb7bb9a5
                     </div>
                 </li>
             </ul>
@@ -65,7 +72,11 @@ const getListDetail = async () => {
             id: t.id,
             name: t.name,
             artist: (t.ar || t.artist || []).map((a) => a.name).join('/'),
+<<<<<<< HEAD
             durationMs: t.dt || t.duration || 0,
+=======
+            durationMs: t.dt || t.duration || 0,
+>>>>>>> 713a6a3b7cdb0b59e0d8312693b13e2ccb7bb9a5
             bend: t.al?.name || []
         })) || []
         console.log(res.playlist.tracks)
@@ -77,9 +88,15 @@ const getListDetail = async () => {
 const SongsMS = (MS) => {
     if (!MS) return '00:00'
     const times = Math.floor(MS / 1000)
+<<<<<<< HEAD
     const m = Math.floor(times / 60)
     const s = times % 60
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+=======
+    const m = Math.floor( times / 60)
+    const s = times % 60
+    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
+>>>>>>> 713a6a3b7cdb0b59e0d8312693b13e2ccb7bb9a5
 }
 
 onMounted(() => {
