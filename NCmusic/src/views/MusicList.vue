@@ -79,7 +79,7 @@ const SongsMS = (MS) => {
     const times = Math.floor(MS / 1000)
     const m = Math.floor(times / 60)
     const s = times % 60
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
 }
 
 onMounted(() => {
