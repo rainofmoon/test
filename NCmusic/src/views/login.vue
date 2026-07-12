@@ -20,9 +20,10 @@
 </template>
 
 <script setup name="loginpage">
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue';
 import http from '@/http/axios';
 import { useUserStore } from '@/stores/user';
+import router from '@/router';
 
 //创建useUserStore实例
 const userStore = useUserStore();
@@ -101,6 +102,7 @@ const getQRcodeStatus = async (key) => {
                         nickname:profile.nickname,
                         avatar:profile.avatarUrl
                     })
+                    router.go(-1)
                 }
             }
         } catch (err) {
@@ -125,6 +127,12 @@ watch(() => qrImg.value,(val) => {
 
 onBeforeMount(() => {
     getQRkey()
+})
+onUnmounted(() => {
+    if(qrCheckInterval.value){
+        clearInterval(qrCheckInterval.value);
+        qrCheckInterval.value = null
+    }
 })
 
 </script>

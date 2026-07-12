@@ -1,13 +1,14 @@
 <script setup>
 import { RouterView, RouterLink } from 'vue-router';
-import { ref } from 'vue';
-// import loginpage from '@/components/login.vue'
-
+import { onMounted, ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 const searchkeywords = ref('')
 const handlesearch = () => {
   const keyword = searchkeywords.value.trim()
   console.log(keyword)
 }
+const userstore = useUserStore()
+console.log(userstore.isLogin)
 
 </script>
 
@@ -28,7 +29,16 @@ const handlesearch = () => {
               @keyup.enter="handlesearch">
           </div>
           <div class="login-box">
-            <RouterLink to="/login" class="login-btn" >登录</RouterLink>
+            <RouterLink v-if="!userstore.isLogin" to="/login" class="login-btn">登录</RouterLink>
+            <div class="user-avatar" v-else>
+              <div>
+                <img class="userImg" :src="userstore.user.avatar" alt="">
+              </div>
+              <!-- 下拉框 -->
+              <div class="user-drop">
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -113,7 +123,6 @@ const handlesearch = () => {
 }
 
 .login-box {
-  border: 1px solid red;
   border-radius: 18px;
   margin-left: 16px;
 }
@@ -122,14 +131,26 @@ const handlesearch = () => {
   padding: 8px 16px;
   color: red;
   text-decoration: none;
-  border: 1px red;
+  border: 1px solid red;
   font-size: 14px;
-  background:none;
+  background: none;
 }
 
 .main-content {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.userImg {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 50%;
 }
 </style>
