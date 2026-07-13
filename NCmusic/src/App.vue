@@ -8,7 +8,10 @@ const handlesearch = () => {
   console.log(keyword)
 }
 const userstore = useUserStore()
-console.log(userstore.isLogin)
+const userInfo = userstore.user
+const quiteLogin = () => {
+  userstore.clearUser()
+}
 
 </script>
 
@@ -36,7 +39,8 @@ console.log(userstore.isLogin)
               </div>
               <!-- 下拉框 -->
               <div class="user-drop">
-
+                  <div class="userName">{{ userInfo.nickname }}</div>
+                  <button class="unlogin" @click="quiteLogin()">退出登录</button>
               </div>
             </div>
           </div>
@@ -50,8 +54,6 @@ console.log(userstore.isLogin)
 </template>
 <style scoped>
 .app {
-  margin: 0;
-  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -134,6 +136,7 @@ console.log(userstore.isLogin)
   border: 1px solid red;
   font-size: 14px;
   background: none;
+  border-radius: 20px;
 }
 
 .main-content {
@@ -145,6 +148,7 @@ console.log(userstore.isLogin)
 .user-avatar {
   width: 50px;
   height: 50px;
+  text-align: center;
 }
 
 .userImg {
@@ -152,5 +156,27 @@ console.log(userstore.isLogin)
   height: 100%;
   margin: 0;
   border-radius: 50%;
+}
+
+.user-avatar:hover .user-drop{
+  display: block;
+}
+
+.user-drop{
+  width: 100px;
+  height: 100px;
+  font-size: 14px;
+  background-color: white;
+  text-align: center;
+  display: none;
+  position: relative;
+  border-radius:0 0 5px 5px ;
+}
+.userName{
+  padding-top: 10px;
+}
+.unlogin{
+  border: none;
+  margin: 10px;
 }
 </style>
