@@ -15,27 +15,8 @@
                 <div class="description">{{ playListDetail.description }}</div>
             </div>
         </div>
-        <div class="SongList">
-            <ul class="list-ul">
-                <li class="list-li" v-for="(song, index) in songs" :key="song.id">
-                    <div class="list-index">
-                        <span>{{ index + 1 }}</span>
-                    </div>
-                    <div class="list-content">
-                        <div class="songname">
-                            <span>{{ song.name }}</span>
-                            <div class="singer">
-                                <span>{{ song.artist }}</span>
-                            </div>
-                        </div>
-                        <div class="list-extre">
-                            <span class="song-ablum">《{{ song.bend }}》</span>
-                            <span>{{ SongsMS(song.durationMs) }}</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <!-- SongList组件，可以在 搜索 页面中复用 -->
+        <SongList :song="songs"/>
     </div>
 </template>
 
@@ -43,6 +24,7 @@
 import { useRoute } from 'vue-router';
 import { onMounted, computed, ref, watch } from 'vue';
 import http from '@/http/axios';
+import SongList from '@/components/SongList.vue'
 
 const route = useRoute();
 
@@ -66,21 +48,14 @@ const getListDetail = async () => {
             name: t.name,
             artist: (t.ar || t.artist || []).map((a) => a.name).join('/'),
             durationMs: t.dt || t.duration || 0,
-            bend: t.al?.name || []
+            ablum: t.al?.name || []
         })) || []
-        console.log(res.playlist.tracks)
     } catch (err) {
         console.error(err)
     }
 }
 
-const SongsMS = (MS) => {
-    if (!MS) return '00:00'
-    const times = Math.floor(MS / 1000)
-    const m = Math.floor(times / 60)
-    const s = times % 60
-    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
-}
+
 
 onMounted(() => {
     getListDetail()
@@ -121,43 +96,5 @@ onMounted(() => {
     }
 }
 
-ul li {
-    border-radius: 5px;
-    background-color: white;
-    border: 1px solid rgb(232, 232, 232);
-    width: 100%;
-    list-style-type: none;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-}
 
-.list-index {
-    font-size: 12px;
-    color: #999;
-    margin: 5px;
-}
-
-.list-content{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.songname {
-    margin: 0 15px;
-    font-size: 14px;
-}
-
-.singer {
-    font-size: 10px;
-    color: #999;
-    margin: 5px;
-}
-
-.list-extre {
-    font-size: 12px;
-    color: #999;
-}
 </style>

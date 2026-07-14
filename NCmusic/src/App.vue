@@ -1,11 +1,19 @@
 <script setup>
-import { RouterView, RouterLink } from 'vue-router';
+import { RouterView, RouterLink,useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
+
 const searchkeywords = ref('')
+const router = useRouter()
+
 const handlesearch = () => {
   const keyword = searchkeywords.value.trim()
-  console.log(keyword)
+  if(!keyword) return
+  router.push({
+    name:'search',
+    query:{ keyword }
+  })
+
 }
 const userstore = useUserStore()
 const userInfo = userstore.user
@@ -122,6 +130,10 @@ const quiteLogin = () => {
   align-items: center;
   margin: auto 0 auto auto;
 
+}
+.search-input{
+  padding: 5px;
+  border-radius: 20px;
 }
 
 .login-box {
