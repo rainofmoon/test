@@ -1,7 +1,7 @@
 <template>
     <div class="SongList">
         <ul class="list-ul">
-            <li class="list-li" v-for="(song, index) in songs.song" :key="song.id">
+            <li class="list-li" v-for="(song, index) in songs.song" :key="song.id" @click="PlaySong(song.id)">
                 <div class="list-index">
                     <span>{{ index + 1 }}</span>
                 </div>
@@ -23,8 +23,11 @@
 </template>
 
 <script setup name="SongList">
+import { useRouter } from 'vue-router'
+
+
 const songs = defineProps(['song'])
-console.log(songs)
+const router = useRouter()
 
 const SongsMS = (MS) => {
     if (!MS) return '00:00'
@@ -32,6 +35,13 @@ const SongsMS = (MS) => {
     const m = Math.floor(times / 60)
     const s = times % 60
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
+const PlaySong = (id) => {
+    if(!id) return
+    router.push({
+        name:'player',
+        query:{id}
+    })
 }
 
 </script>
