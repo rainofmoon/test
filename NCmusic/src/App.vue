@@ -1,6 +1,6 @@
 <script setup>
-import { RouterView, RouterLink,useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { RouterView, RouterLink, useRouter, useRoute } from 'vue-router';
+import { computed, ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 
 const searchkeywords = ref('')
@@ -8,10 +8,10 @@ const router = useRouter()
 
 const handlesearch = () => {
   const keyword = searchkeywords.value.trim()
-  if(!keyword) return
+  if (!keyword) return
   router.push({
-    name:'search',
-    query:{ keyword }
+    name: 'search',
+    query: { keyword }
   })
 
 }
@@ -47,8 +47,8 @@ const quiteLogin = () => {
               </div>
               <!-- 下拉框 -->
               <div class="user-drop">
-                  <div class="userName">{{ userInfo.nickname }}</div>
-                  <button class="unlogin" @click="quiteLogin()">退出登录</button>
+                <div class="userName">{{ userInfo.nickname }}</div>
+                <button class="unlogin" @click="quiteLogin()">退出登录</button>
               </div>
             </div>
           </div>
@@ -58,6 +58,7 @@ const quiteLogin = () => {
     <main class="main-content">
       <RouterView />
     </main>
+    
   </div>
 </template>
 <style scoped>
@@ -131,7 +132,8 @@ const quiteLogin = () => {
   margin: auto 0 auto auto;
 
 }
-.search-input{
+
+.search-input {
   padding: 5px;
   border-radius: 20px;
 }
@@ -170,11 +172,11 @@ const quiteLogin = () => {
   border-radius: 50%;
 }
 
-.user-avatar:hover .user-drop{
+.user-avatar:hover .user-drop {
   display: block;
 }
 
-.user-drop{
+.user-drop {
   width: 100px;
   height: 100px;
   font-size: 14px;
@@ -182,12 +184,14 @@ const quiteLogin = () => {
   text-align: center;
   display: none;
   position: relative;
-  border-radius:0 0 5px 5px ;
+  border-radius: 0 0 5px 5px;
 }
-.userName{
+
+.userName {
   padding-top: 10px;
 }
-.unlogin{
+
+.unlogin {
   border: none;
   margin: 10px;
 }

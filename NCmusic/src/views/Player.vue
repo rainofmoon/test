@@ -9,7 +9,7 @@
                 </div>
                 <div class="content-right">
                     <div class="song-extra">
-                            <h3 class="song-title">{{ songTitle }}</h3>
+                        <h3 class="song-title">{{ songTitle }}</h3>
                         <div class="artist-ablum">
                             <div class="artistor">{{ songArtor }}</div>
                             <div class="ablum">《{{ songAblum }}》</div>
@@ -22,6 +22,9 @@
                     </div>
                 </div>
             </div>
+            <div class="bottom">
+                <AudioPlayer />
+            </div>
         </div>
     </div>
 </template>
@@ -30,7 +33,7 @@
 import http from '@/http/axios';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-
+import AudioPlayer from '@/components/AudioPlayer.vue';
 const route = useRoute()
 
 const songId = computed(() => route.query?.id)
@@ -45,8 +48,6 @@ const songCover = ref('')
 const songLyric = ref([])
 const tsLyric = ref([])
 
-console.log(songId)
-
 const fetchSongDetail = async (songId) => {
     if (!songId) return
     try {
@@ -54,7 +55,6 @@ const fetchSongDetail = async (songId) => {
             ids: songId.value
         })
         const detial = (res.songs || [])[0]
-        console.log(detial)
         songTitle.value = detial.name || '未知曲目'
         songArtor.value = (detial.ar || detial.artists || []).map((a) => a.name).join('/')
         songAblum.value = detial.al.name
@@ -71,10 +71,7 @@ const fetchlyric = async (id) => {
             id: songId.value
         })
         const Lyric = res.lrc.lyric
-        console.log(res);
-
         songLyric.value = parseLyric(Lyric)
-        console.log(songLyric)
     } catch (err) {
         console.error(err);
     }
@@ -145,7 +142,7 @@ onMounted(() => {
     justify-content: center;
 }
 
-.song-extra{
+.song-extra {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -153,7 +150,7 @@ onMounted(() => {
     justify-content: center;
 }
 
-.song-title{
+.song-title {
     width: 300px;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -169,9 +166,10 @@ onMounted(() => {
     margin: 10px auto;
 }
 
-.artistor,.ablum{
+.artistor,
+.ablum {
     margin: 0 10px;
-    width: 150px;
+    width: 100px;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;

@@ -33,7 +33,6 @@ onBeforeMount(() => {
     }
     ).then(res => {
         List.value = res.result;
-        console.log(List)
     })
 })
 </script>

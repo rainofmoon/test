@@ -33,7 +33,6 @@ const playListId = route.query.id;
 const playListDetail = ref({})
 const songs = ref([])
 const creator = ref({})
-const songMS = ref()
 
 
 const getListDetail = async () => {
@@ -48,7 +47,8 @@ const getListDetail = async () => {
             name: t.name,
             artist: (t.ar || t.artist || []).map((a) => a.name).join('/'),
             durationMs: t.dt || t.duration || 0,
-            ablum: t.al?.name || []
+            ablum: t.al?.name || [],
+            cover:t.al?.picUrl || []
         })) || []
     } catch (err) {
         console.error(err)

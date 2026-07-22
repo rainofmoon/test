@@ -1,7 +1,7 @@
 <template>
     <div class="SongList">
         <ul class="list-ul">
-            <li class="list-li" v-for="(song, index) in songs.song" :key="song.id" @click="PlaySong(song.id)">
+            <li class="list-li" v-for="(song, index) in songs.song" :key="song.id" @click="PlaySong(song.id,index)">
                 <div class="list-index">
                     <span>{{ index + 1 }}</span>
                 </div>
@@ -24,10 +24,11 @@
 
 <script setup name="SongList">
 import { useRouter } from 'vue-router'
-
+import {useAudioPlayerStore} from '@/stores/AudioJS'
 
 const songs = defineProps(['song'])
 const router = useRouter()
+const useAudior = useAudioPlayerStore()
 
 const SongsMS = (MS) => {
     if (!MS) return '00:00'
@@ -36,12 +37,14 @@ const SongsMS = (MS) => {
     const s = times % 60
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
-const PlaySong = (id) => {
+const PlaySong = (id,index) => {
     if(!id) return
     router.push({
         name:'player',
         query:{id}
     })
+    useAudior.setPlayList(songs)
+    useAudior.setPlayingSong(index)
 }
 
 </script>
