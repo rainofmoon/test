@@ -4,15 +4,15 @@
             <div class="content">
                 <div class="content-left">
                     <div class="song-cover">
-                        <img class="Cover" :src="songCover" style="object-fit: cover;">
+                        <img class="Cover" :src="songInfo.cover || ''" style="object-fit: cover;">
                     </div>
                 </div>
                 <div class="content-right">
                     <div class="song-extra">
-                        <h3 class="song-title">{{ songTitle }}</h3>
+                        <h3 class="song-title">{{ songInfo.name || '未知曲目' }}</h3>
                         <div class="artist-ablum">
-                            <div class="artistor">{{ songArtor }}</div>
-                            <div class="ablum">《{{ songAblum }}》</div>
+                            <div class="artistor">{{ songInfo.artist || '未知歌手' }}</div>
+                            <div class="ablum">《{{ songInfo.ablum || '未知专辑' }}》</div>
                         </div>
                     </div>
                     <div class="lyric">
@@ -22,55 +22,53 @@
                     </div>
                 </div>
             </div>
-            <div class="bottom">
-                <AudioPlayer />
-            </div>
         </div>
     </div>
 </template>
 
 <script setup>
 import http from '@/http/axios';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
-import AudioPlayer from '@/components/AudioPlayer.vue';
+import { useAudioPlayerStore } from '@/stores/AudioJS';
+
 const route = useRoute()
-
-const songId = computed(() => route.query?.id)
-
-//歌曲信息
-const songTitle = ref('')
-const songArtor = ref('')
-const songAblum = ref('')
-const songCover = ref('')
+const usePlayer = useAudioPlayerStore()
+const { PlayingSongUrl, isplaying, currentTime, duration, PlayingId, PlayingSong } = storeToRefs(usePlayer)
+const routeId = computed(() => route.query?.id || PlayingId.value)
+const songInfo = computed(() => PlayingSong.value || {})
 
 //歌词信息
 const songLyric = ref([])
-const tsLyric = ref([])
 
-const fetchSongDetail = async (songId) => {
-    if (!songId) return
+const fetchSongDetail = async (id) => {
+    if (!id) return
     try {
         const res = await http.get('/song/detail', {
-            ids: songId.value
+            ids: id
         })
-        const detial = (res.songs || [])[0]
-        songTitle.value = detial.name || '未知曲目'
-        songArtor.value = (detial.ar || detial.artists || []).map((a) => a.name).join('/')
-        songAblum.value = detial.al.name
-        songCover.value = detial.al.picUrl
+        const detial = (res.songs || [])[0] || {}
+        usePlayer.setCurrentSong({
+            id,
+            name: detial.name || '未知曲目',
+            artist: (detial.ar || detial.artists || []).map((a) => a.name).join('/'),
+            ablum: detial.al?.name || '未知专辑',
+            cover: detial.al?.picUrl || ''
+        })
+        usePlayer.play()
     } catch (error) {
         console.error(error)
     }
 }
 
 const fetchlyric = async (id) => {
-    if (!id) return
+    if (!id) return    
     try {
         const res = await http.get('/lyric', {
-            id: songId.value
+            id
         })
-        const Lyric = res.lrc.lyric
+        const Lyric = res.lrc?.lyric || ''
         songLyric.value = parseLyric(Lyric)
     } catch (err) {
         console.error(err);
@@ -87,9 +85,16 @@ const parseLyric = (raw = '') => {
         })
 }
 
+watch(PlayingId,(newPlayingId) => {
+    fetchlyric(newPlayingId)
+})
+
+
 onMounted(() => {
-    fetchSongDetail(songId)
-    fetchlyric(songId)
+    if (routeId.value) {
+        fetchSongDetail(routeId.value)
+        fetchlyric(routeId.value)
+    }
 })
 
 </script>
@@ -98,12 +103,12 @@ onMounted(() => {
 .Player-page {
     background-color: #3b3b3b;
     width: 100%;
-    height: 100vh;
+    height: 90vh;
 }
 
 .Page-content {
     width: 900px;
-    height: 550px;
+    height: 500px;
     margin: 40px auto;
     background-color: #272727;
     border-radius: 10px;
@@ -122,8 +127,8 @@ onMounted(() => {
 }
 
 .song-cover {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 350px;
     margin: 0 auto;
 }
 
@@ -191,4 +196,6 @@ onMounted(() => {
 .lyric-content {
     margin: 10px 0;
 }
+
+
 </style>
