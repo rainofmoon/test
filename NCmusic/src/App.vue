@@ -154,12 +154,14 @@ watch(PlayingSongUrl, (url) => {
 </template>
 <style scoped>
 .app {
+  --top-height: 90px;
+  --bottom-height: 90px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: #eeeeee;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
+  font-display: swap;
 }
 
 .top-nav {
@@ -249,13 +251,13 @@ watch(PlayingSongUrl, (url) => {
 }
 
 .main-content {
+  /* reserve space for fixed top-nav and bottom player using CSS variables */
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 90px;
-  margin-bottom: 100px;
+  display: block;
+  padding-top: var(--top-height);
+  padding-bottom: var(--bottom-height);
   box-sizing: border-box;
+  min-height: calc(100vh - var(--top-height) - var(--bottom-height));
 }
 
 .user-avatar {
