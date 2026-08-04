@@ -2,7 +2,7 @@
   <main class="content">
     <div class="personalized">
       <h4>推荐歌单</h4>
-      <Listcard />
+      <Listcard :list="List" />
     </div>
     <div class="topList">
       <h4>热门榜单</h4>
@@ -12,30 +12,52 @@
             <ul class="nav-types">
               <li class="nav-type" @click="change(index)" :class='currentIndex == index ? "active" : ""'
                 v-for="(item, index) in topList" :key="item.id">{{ item.name }}</li>
-              <div>
-                <li class="more">更多>></li>
-              </div>
+              <li class="more">更多>></li>
             </ul>
           </div>
         </nav>
       </div>
       <div class="topList-SongList">
-        <Songlist :song="songList" />
+        <Songlist :song="songList[currentIndex]" />
+        <div class="topList-bottm">
+          <span class="moresong" @click="toPlayer()">全部歌曲</span>
+        </div>
       </div>
     </div>
   </main>
 </template>
 <script setup>
 import Listcard from '@/components/Listcard.vue';
-import SongList from '@/components/SongList.vue';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import http from '../http/axios';
 import Songlist from '@/components/SongList.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+
+//推荐歌单
+const List = ref([])
+//榜单
 const topList = ref([])
 const currentIndex = ref(0)
 const songList = ref([])
-const playlistDetails = ref([])
+const ListID = ref()
+
+const fetchPersonalized = async () => {
+  try {
+    const res = await http.get('personalized', {
+      limit: 5
+    })
+    List.value = res.result.map((item) => ({
+      id:item.id,
+      name:item.name,
+      coverImgUrl:item.picUrl,
+    }))
+    console.log(List)
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 const fetchTopList = async () => {
   try {
@@ -47,14 +69,16 @@ const fetchTopList = async () => {
       coverImgUrl: item.coverImgUrl,
       description: item.description
     }))
-    await fetchPlaylistDetails(topList.value.map((item) => item.id))
+    await Promise.allSettled(topList.value.map((item) => fetchPlaylistDetail(item.id)))
   } catch (err) {
     console.error(err)
   }
 }
 
 const change = (index) => {
+  console.log(index)
   currentIndex.value = index
+  ListID.value = topList.value[index].id
 }
 
 const fetchPlaylistDetail = async (id) => {
@@ -64,36 +88,31 @@ const fetchPlaylistDetail = async (id) => {
       id,
       limit: 10
     })
-    console.log(res);
     const data = res.songs
-    songList.value = data.map((item) => ({
+    const songs = data.map((item) => ({
       id: item.id,
-      name:item.name,
-      artist:(item.ar || item.artist || []).map((t) => t.name).join('/'),
-      ablum:item.al?.name || [],
-      durationMs:item.dt || 0,
-      cover:item.al?.picUrl || []
-    })
-  )
+      name: item.name,
+      artist: item.ar.map((ar) => ar.name).join('/'),
+      durationMs: item.dt,
+      ablum: item.al.name,
+      cover: item.al.picUrl
+    }))
+    songList.value.push(songs)
   } catch (err) {
     console.error(err)
     return null
   }
 }
-
-const fetchPlaylistDetails = async (ids) => {
-  if (!ids?.length) return
-  const results = await Promise.allSettled(ids.map((id) => fetchPlaylistDetail(id)))
-  playlistDetails.value = results.map((result, index) => ({
-    id: ids[index],
-    status: result.status,
-    data: result.status === 'fulfilled' ? result.value : null,
-    error: result.status === 'rejected' ? result.reason : null
-  }))
-  console.log('playlistDetails', playlistDetails.value)
+const toPlayer = () => {
+  console.log(ListID.value)
+  if (!ListID.value) return
+  router.push({
+    name: 'musiclist',
+    query: { id: ListID.value }
+  })
 }
-
 onMounted(() => {
+  fetchPersonalized()
   fetchTopList()
 })
 </script>
@@ -111,6 +130,7 @@ h4 {
 .topList {
   width: 100%;
   margin-top: 10px;
+  padding: 10px;
 }
 
 .topList-nav {
@@ -119,19 +139,19 @@ h4 {
 
 .nav-container {
   width: 100%;
-  padding: 10px 0;
 }
 
 .nav-types,
 .nav-type {
   font-size: 14px;
   width: auto;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .nav-types {
   list-style-type: none;
   background-color: white;
-  padding: 10px 0;
   display: flex;
   justify-content: space-around;
 }
@@ -144,7 +164,9 @@ h4 {
 .more {
   border: none;
   color: rgb(102, 103, 103);
-  float: right;
+  display: inline;
+  padding: 10px;
+
 }
 
 .nav-type:hover:not(.active) {
@@ -155,5 +177,18 @@ h4 {
 .active {
   background-color: #e70000;
   color: white;
+}
+
+.topList-bottm {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background-color: #ffffff;
+  display: flex;
+}
+
+.moresong {
+  width: 100%;
+  text-align: center;
 }
 </style>

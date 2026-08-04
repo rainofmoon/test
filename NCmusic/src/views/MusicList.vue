@@ -40,6 +40,7 @@ const getListDetail = async () => {
         const res = await http.get('/playlist/detail', {
             id: playListId,
         })
+        console.log(res)
         playListDetail.value = res.playlist
         creator.value = res.playlist.creator
         songs.value = res.playlist.tracks?.map((t) => ({

@@ -104,6 +104,7 @@ onMounted(() => {
     background-color: #3b3b3b;
     width: 100%;
     height: 90vh;
+    padding: 1px;
 }
 
 .Page-content {

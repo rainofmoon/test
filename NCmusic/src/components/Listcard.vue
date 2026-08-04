@@ -1,8 +1,8 @@
 <template>
     <div class="listcard">
-        <div class="card-content" v-for="list in List" :key="list.id" @click="songlist(list.id)">
+        <div class="card-content" v-for="list in List.list" :key="list.id" @click="songlist(list.id)">
             <div class="card-content-img">
-                <img :src="list.picUrl">
+                <img :src="list.coverImgUrl">
             </div>
             <div class="card-content-name">
                 <div>{{ list.name }}</div>
@@ -12,35 +12,24 @@
 </template>
 
 <script setup name="listcard">
-import { onBeforeMount, ref } from 'vue';
+import { ref,defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 import http from '@/http/axios';
 
-const List = ref([]);
-
 const router = useRouter();
-
+const List = defineProps(['list'])
 const songlist = (id) => {
     router.push({
         name:'musiclist',
         query:{id}
     })
 }
-
-onBeforeMount(() => {
-    http.get('/personalized', {
-        limit: 5
-    }
-    ).then(res => {
-        List.value = res.result;
-    })
-})
 </script>
 <style>
 .listcard {
     width: 800px;
-    display: flex;
-    justify-content: space-between;
+    display:inline-grid;
+    grid-template-columns:auto auto auto auto auto;
 }
 
 .card-content-img {

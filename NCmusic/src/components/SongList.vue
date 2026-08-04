@@ -50,15 +50,17 @@ const PlaySong = (id,index) => {
 </script>
 
 <style>
-ul li {
+.list-ul,.list-li {
     border-radius: 5px;
     background-color: white;
     border: 1px solid rgb(232, 232, 232);
     width: 100%;
     list-style-type: none;
-    padding: 5px 10px;
-    display: flex;
     align-items: center;
+}
+.list-li{
+    display:flex;
+    padding:5px;
 }
 
 .list-index {
