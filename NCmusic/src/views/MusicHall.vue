@@ -14,14 +14,14 @@
                 v-for="(item, index) in topList" :key="item.id">{{ item.name }}</li>
               <li class="more">更多>></li>
             </ul>
+            <div class="topList-SongList">
+              <Songlist :song="songList[currentIndex]" />
+              <div class="topList-bottm">
+                <span class="moresong" @click="toPlayer()">全部歌曲</span>
+              </div>
+            </div>
           </div>
         </nav>
-      </div>
-      <div class="topList-SongList">
-        <Songlist :song="songList[currentIndex]" />
-        <div class="topList-bottm">
-          <span class="moresong" @click="toPlayer()">全部歌曲</span>
-        </div>
       </div>
     </div>
   </main>
@@ -49,9 +49,9 @@ const fetchPersonalized = async () => {
       limit: 5
     })
     List.value = res.result.map((item) => ({
-      id:item.id,
-      name:item.name,
-      coverImgUrl:item.picUrl,
+      id: item.id,
+      name: item.name,
+      coverImgUrl: item.picUrl,
     }))
     console.log(List)
   } catch (err) {
@@ -135,6 +135,7 @@ h4 {
 
 .topList-nav {
   margin: 10px 0;
+  background-color: none;
 }
 
 .nav-container {

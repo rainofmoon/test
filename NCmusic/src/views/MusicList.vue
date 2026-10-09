@@ -64,7 +64,7 @@ onMounted(() => {
 
 </script>
 
-<style>
+<style scoped>
 .ListPage {
     width: 800px;
     margin: 0 auto;
@@ -79,7 +79,8 @@ onMounted(() => {
 .ListImg img {
     width: 200px;
     height: 200px;
-    margin: 0 20px;
+    margin-right: 20px;
+    border-radius: 10px;
 }
 
 .ListDetail {
@@ -94,6 +95,7 @@ onMounted(() => {
         width: 50px;
         height: 50px;
         border-radius: 50%;
+        margin-right: 10px;
     }
 }
 

@@ -25,7 +25,7 @@ const songlist = (id) => {
     })
 }
 </script>
-<style>
+<style scoped>
 .listcard {
     width: 800px;
     display:inline-grid;

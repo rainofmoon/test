@@ -52,15 +52,15 @@ const PlaySong = (id,index) => {
 <style>
 .list-ul,.list-li {
     border-radius: 5px;
-    background-color: white;
-    border: 1px solid rgb(232, 232, 232);
     width: 100%;
     list-style-type: none;
     align-items: center;
 }
 .list-li{
+    background-color: white;
     display:flex;
-    padding:5px;
+    padding:5px 0;
+    margin:2px 0;
 }
 
 .list-index {

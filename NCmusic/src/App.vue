@@ -233,6 +233,7 @@ watch(PlayingSongUrl, (url) => {
 .search-input {
   padding: 5px;
   border-radius: 20px;
+  border: none;
 }
 
 .login-box {
